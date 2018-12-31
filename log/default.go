@@ -1,4 +1,4 @@
-package output
+package log
 
 // Severity represents the log level
 type Severity int
@@ -23,4 +23,14 @@ type Entry struct {
 // The Formatter interface has a simple method to format several log entries
 type Formatter interface {
 	Format(ee []Entry) string
+}
+
+type Writer struct {
+	f Formatter
+}
+
+func NewWriter(f Formatter) *Writer {
+	return &Writer{
+		f: f,
+	}
 }
