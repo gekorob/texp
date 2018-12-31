@@ -1,5 +1,10 @@
 package log
 
+import (
+	"io"
+	"os"
+)
+
 // Severity represents the log level
 type Severity int
 
@@ -26,11 +31,13 @@ type Formatter interface {
 }
 
 type Writer struct {
+	w io.Writer
 	f Formatter
 }
 
-func NewWriter(f Formatter) *Writer {
+func NewConsoleWriter(f Formatter) *Writer {
 	return &Writer{
+		w: os.Stdout,
 		f: f,
 	}
 }
