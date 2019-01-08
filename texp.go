@@ -2,7 +2,11 @@ package texp
 
 import (
 	"testing"
+
+	"github.com/gekorob/texp/out"
 )
+
+var decorator out.Formatter
 
 type exp struct {
 	t     *testing.T
@@ -10,7 +14,7 @@ type exp struct {
 	failF func()
 }
 
-// The Expect builder returns a function to setup test expectations ala RSpec
+// Expect builder returns a function to setup test expectations ala RSpec
 func Expect(t *testing.T) func(interface{}) *exp {
 	e := &exp{
 		t:     t,

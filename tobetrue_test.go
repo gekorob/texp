@@ -9,5 +9,6 @@ import (
 func TestSimpleToBeTrue(t *testing.T) {
 	expect := texp.Expect(t)
 
+	// t.Error("error")
 	expect(true).ToBeTrue()
 }
