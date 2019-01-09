@@ -6,8 +6,8 @@ import (
 	"github.com/gekorob/texp/out"
 )
 
-func TestEmptyMsgQueue(t *testing.T) {
-	mq := out.NewMsgQueue()
+func TestEmptyLogQueue(t *testing.T) {
+	mq := out.NewLogQueue()
 
 	if count := mq.Count(); count != 0 {
 		t.Error("queue not empty or error creating it")

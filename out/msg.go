@@ -26,16 +26,16 @@ type Msg struct {
 	Content string
 }
 
-// MsgQueue collects all the Messages pushed into it and manages them in a FIFO way.
-type MsgQueue struct {
+// LogQueue collects all the Messages pushed into it and manages them in a FIFO way.
+type LogQueue struct {
 	mm    []Msg
 	count int
 	rw    *sync.RWMutex
 }
 
-// NewMsgQueue factory method creates and initialize a new MsgQueue.
-func NewMsgQueue() *MsgQueue {
-	return &MsgQueue{
+// NewLogQueue factory method creates and initialize a new MsgQueue.
+func NewLogQueue() *LogQueue {
+	return &LogQueue{
 		mm:    make([]Msg, 0, 2),
 		count: 0,
 		rw:    &sync.RWMutex{},
@@ -43,7 +43,7 @@ func NewMsgQueue() *MsgQueue {
 }
 
 // Count gives the number of element currently in the queue.
-func (s *MsgQueue) Count() int {
+func (s *LogQueue) Count() int {
 	s.rw.RLock()
 	defer s.rw.RUnlock()
 	return s.count
@@ -51,7 +51,7 @@ func (s *MsgQueue) Count() int {
 
 // Pop retrieves the first added Message from the queue, the confirmation to have
 // found the message and removes it.
-func (s *MsgQueue) Pop() (m Msg, found bool) {
+func (s *LogQueue) Pop() (m Msg, found bool) {
 	if s.Count() == 0 {
 		return m, false
 	}
