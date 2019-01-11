@@ -1,19 +1,20 @@
 package out_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/gekorob/texp/out"
 )
 
 func TestEmptyLogQueue(t *testing.T) {
-	mq := out.NewLogQueue()
+	lq := out.NewLogQueue()
 
-	if count := mq.Count(); count != 0 {
+	if count := lq.Count(); count != 0 {
 		t.Error("queue not empty or error creating it")
 	}
 
-	if _, found := mq.Pop(); found {
-		t.Error("queue must be empty. expecting found false")
+	if fmt.Sprint(lq) != "" {
+		t.Error("wrong queue output")
 	}
 }

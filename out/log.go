@@ -49,13 +49,9 @@ func (s *LogQueue) Count() int {
 	return s.count
 }
 
-// Pop retrieves the first added Message from the queue, the confirmation to have
-// found the message and removes it.
-func (s *LogQueue) Pop() (m Msg, found bool) {
-	if s.Count() == 0 {
-		return m, false
-	}
-	return m, true
-}
+func (s *LogQueue) String() string {
+	s.rw.RLock()
+	defer s.rw.RUnlock()
 
-// func (s *EntryQueue) decCount()
+	return ""
+}
