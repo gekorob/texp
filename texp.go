@@ -2,11 +2,7 @@ package texp
 
 import (
 	"testing"
-
-	"github.com/gekorob/texp/out"
 )
-
-var decorator out.Formatter
 
 type exp struct {
 	t     *testing.T

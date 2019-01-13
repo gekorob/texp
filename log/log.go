@@ -1,4 +1,4 @@
-package out
+package log
 
 import (
 	"sync"
@@ -26,16 +26,16 @@ type Msg struct {
 	Content string
 }
 
-// LogQueue collects all the Messages pushed into it and manages them in a FIFO way.
-type LogQueue struct {
+// Queue collects all the Messages pushed into it and manages them in a FIFO way.
+type Queue struct {
 	mm    []Msg
 	count int
 	rw    *sync.RWMutex
 }
 
-// NewLogQueue factory method creates and initialize a new MsgQueue.
-func NewLogQueue() *LogQueue {
-	return &LogQueue{
+// NewQueue factory method creates and initialize a new MsgQueue.
+func NewQueue() *Queue {
+	return &Queue{
 		mm:    make([]Msg, 0, 2),
 		count: 0,
 		rw:    &sync.RWMutex{},
@@ -43,13 +43,13 @@ func NewLogQueue() *LogQueue {
 }
 
 // Count gives the number of element currently in the queue.
-func (s *LogQueue) Count() int {
+func (s *Queue) Count() int {
 	s.rw.RLock()
 	defer s.rw.RUnlock()
 	return s.count
 }
 
-func (s *LogQueue) String() string {
+func (s *Queue) String() string {
 	s.rw.RLock()
 	defer s.rw.RUnlock()
 
