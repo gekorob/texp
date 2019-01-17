@@ -1,15 +1,13 @@
 package log
 
-import (
-	"sync"
-)
+import "sync"
 
 // Severity is a form of message level classification.
 type Severity int
 
 const (
 	// Info is for general purpose messages.
-	Info Severity = iota
+	Info Severity = iota + 1
 	// Test is for the test name.
 	Test
 	// Trace is used to follow the call stack.
@@ -20,38 +18,59 @@ const (
 	Fatal
 )
 
-// The Msg is a categorized text content.
-type Msg struct {
-	Level   Severity
+// The Message is a categorized text content.
+type Message struct {
+	Severity
 	Content string
 }
 
 // Queue collects all the Messages pushed into it and manages them in a FIFO way.
+// type Queue []Message
 type Queue struct {
-	mm    []Msg
+	mm    []Message
 	count int
+	idx   int
 	rw    *sync.RWMutex
 }
 
-// NewQueue factory method creates and initialize a new MsgQueue.
+// NewQueue is a factory convenience method to initialize a
+// new message queue.
 func NewQueue() *Queue {
 	return &Queue{
-		mm:    make([]Msg, 0, 2),
-		count: 0,
-		rw:    &sync.RWMutex{},
+		mm: make([]Message, 0, 2),
+		rw: &sync.RWMutex{},
 	}
 }
 
 // Count gives the number of element currently in the queue.
-func (s *Queue) Count() int {
-	s.rw.RLock()
-	defer s.rw.RUnlock()
-	return s.count
+func (q *Queue) Count() int {
+	q.rw.RLock()
+	defer q.rw.RUnlock()
+	return q.count
 }
 
-func (s *Queue) String() string {
-	s.rw.RLock()
-	defer s.rw.RUnlock()
-
-	return ""
+// Push method add a message to the FIFO log queue
+func (q *Queue) Push(msg Message) {
+	q.rw.Lock()
+	defer q.rw.Unlock()
+	q.mm = append(q.mm, msg)
+	q.count++
 }
+
+// Next method move to the next messages sequentially one by one.
+// Return true if there's an element to move to, otherwises gives you false.
+func (q *Queue) Next() (msg Message, ok bool) {
+	q.rw.RLock()
+	defer q.rw.RUnlock()
+
+	if !(q.idx < q.Count()) {
+		ok = false
+		return
+	}
+	msg = q.mm[q.idx]
+	ok = true
+
+	return
+}
+
+// TODO: can be useful to implement a Front method, a Back Method and a Prev
