@@ -57,6 +57,19 @@ func (q *Queue) Push(msg Message) {
 	q.count++
 }
 
+func (q *Queue) Front() (msg Message, ok bool) {
+	q.rw.RLock()
+	defer q.rw.RUnlock()
+
+	if q.Count() < 1 {
+		ok = false
+		return
+	}
+	q.idx = 0
+
+	return q.Next()
+}
+
 // Next method move to the next messages sequentially one by one.
 // Return true if there's an element to move to, otherwises gives you false.
 func (q *Queue) Next() (msg Message, ok bool) {
@@ -69,6 +82,7 @@ func (q *Queue) Next() (msg Message, ok bool) {
 	}
 	msg = q.mm[q.idx]
 	ok = true
+	q.idx++
 
 	return
 }

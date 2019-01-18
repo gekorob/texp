@@ -39,3 +39,28 @@ func TestAddMessage(t *testing.T) {
 		t.Error("unexpected message retreived")
 	}
 }
+
+func TestPositionToFront(t *testing.T) {
+	q := log.NewQueue()
+
+	_, ok := q.Front()
+	if ok != false {
+		t.Error("unable to position at the beginning of an empty queue")
+	}
+
+	expFirstMsg := log.Message{Severity: log.Test, Content: "this is the first message"}
+	q.Push(expFirstMsg)
+
+	otherMsg := log.Message{Severity: log.Info, Content: "this is another message"}
+	q.Push(otherMsg)
+
+	msg, _ := q.Front()
+	if !reflect.DeepEqual(expFirstMsg, msg) {
+		t.Error("uncorrect positioning to the front")
+	}
+
+	msg, _ = q.Next()
+	if !reflect.DeepEqual(otherMsg, msg) {
+		t.Error("unexpected message after the fist one")
+	}
+}
