@@ -15,9 +15,12 @@ func TestEmptyLogQueue(t *testing.T) {
 	}
 
 	if _, ok := q.Next(); ok != false {
-		t.Error("empty queue must not have a next")
+		t.Error("no next for an empty queue")
 	}
 
+	if _, ok := q.Prev(); ok != false {
+		t.Error("no previous for an empty queue")
+	}
 }
 
 func TestAddMessage(t *testing.T) {
@@ -87,5 +90,47 @@ func TestPositionToTheBack(t *testing.T) {
 	msg, _ = q.Prev()
 	if !reflect.DeepEqual(otherMsg, msg) {
 		t.Error("unexpected message before the last one")
+	}
+}
+
+func TestPrevAndNextWithOneElement(t *testing.T) {
+	q := log.NewQueue()
+
+	q.Push(log.Message{Severity: log.Test, Content: "element"})
+	q.Front()
+
+	if _, ok := q.Prev(); ok != false {
+		t.Error("no prev before the front")
+	}
+
+	if _, ok := q.Next(); ok != false {
+		t.Error("no next after the back")
+	}
+}
+
+func TestIterationOnQueue(t *testing.T) {
+	q := log.NewQueue()
+
+	expFirstMsg := log.Message{Severity: log.Test, Content: "this is the first message"}
+	expLastMsg := log.Message{Severity: log.Test, Content: "this is the last message"}
+
+	q.Push(expFirstMsg)
+	q.Push(expLastMsg)
+
+	if q.Count() != 2 {
+		t.Error("error adding messages to the queue")
+	}
+
+	msgs := make([]log.Message, 0, q.Count())
+	for m, ok := q.Front(); ok; m, ok = q.Next() {
+		msgs = append(msgs, m)
+	}
+
+	if len(msgs) != q.Count() {
+		t.Error("error iterating on queue")
+	}
+
+	if !reflect.DeepEqual(msgs, []log.Message{expFirstMsg, expLastMsg}) {
+		t.Error("unexpected msgs sequence")
 	}
 }
