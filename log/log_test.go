@@ -126,11 +126,16 @@ func TestIterationOnQueue(t *testing.T) {
 		msgs = append(msgs, m)
 	}
 
-	if len(msgs) != q.Count() {
-		t.Error("error iterating on queue")
+	if !reflect.DeepEqual(msgs, []log.Message{expFirstMsg, expLastMsg}) {
+		t.Error("unexpected msgs forward sequence")
 	}
 
-	if !reflect.DeepEqual(msgs, []log.Message{expFirstMsg, expLastMsg}) {
-		t.Error("unexpected msgs sequence")
+	msgs = make([]log.Message, 0, q.Count())
+	for m, ok := q.Back(); ok; m, ok = q.Prev() {
+		msgs = append(msgs, m)
+	}
+
+	if !reflect.DeepEqual(msgs, []log.Message{expLastMsg, expFirstMsg}) {
+		t.Error("unexpected msgs backword sequence")
 	}
 }
