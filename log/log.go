@@ -37,8 +37,9 @@ type Queue struct {
 // new message queue.
 func NewQueue() *Queue {
 	return &Queue{
-		mm: make([]Message, 0, 2),
-		rw: &sync.RWMutex{},
+		mm:  make([]Message, 0, 2),
+		idx: -1,
+		rw:  &sync.RWMutex{},
 	}
 }
 
@@ -46,7 +47,7 @@ func NewQueue() *Queue {
 func (q *Queue) Count() int {
 	q.rw.RLock()
 	defer q.rw.RUnlock()
-	return q.count
+	return len(q.mm)
 }
 
 // Push method add a message to the FIFO log queue
@@ -54,20 +55,33 @@ func (q *Queue) Push(msg Message) {
 	q.rw.Lock()
 	defer q.rw.Unlock()
 	q.mm = append(q.mm, msg)
-	q.count++
 }
 
+// Front method move to the first element of the queue and retrieve it
 func (q *Queue) Front() (msg Message, ok bool) {
 	q.rw.RLock()
 	defer q.rw.RUnlock()
 
-	if q.Count() < 1 {
+	if q.isEmpty() {
 		ok = false
 		return
 	}
-	q.idx = 0
+	q.idxToFirst()
 
-	return q.Next()
+	return q.mm[q.idx], true
+}
+
+func (q *Queue) Back() (msg Message, ok bool) {
+	q.rw.RLock()
+	defer q.rw.RUnlock()
+
+	if q.isEmpty() {
+		ok = false
+		return
+	}
+	q.idxToLast()
+
+	return q.mm[q.idx], true
 }
 
 // Next method move to the next messages sequentially one by one.
@@ -76,15 +90,58 @@ func (q *Queue) Next() (msg Message, ok bool) {
 	q.rw.RLock()
 	defer q.rw.RUnlock()
 
-	if !(q.idx < q.Count()) {
+	if !q.hasNext() {
 		ok = false
 		return
 	}
+	q.incIdx()
 	msg = q.mm[q.idx]
 	ok = true
-	q.idx++
 
 	return
+}
+
+func (q *Queue) Prev() (msg Message, ok bool) {
+	q.rw.RLock()
+	defer q.rw.RUnlock()
+
+	if !q.hasPrev() {
+		ok = false
+		return
+	}
+	q.decIdx()
+	msg = q.mm[q.idx]
+	ok = true
+
+	return
+}
+
+func (q *Queue) isEmpty() bool {
+	return q.Count() < 1
+}
+
+func (q *Queue) hasNext() bool {
+	return q.idx < (q.Count() - 1)
+}
+
+func (q *Queue) hasPrev() bool {
+	return q.idx > 0
+}
+
+func (q *Queue) idxToFirst() {
+	q.idx = 0
+}
+
+func (q *Queue) idxToLast() {
+	q.idx = len(q.mm) - 1
+}
+
+func (q *Queue) incIdx() {
+	q.idx++
+}
+
+func (q *Queue) decIdx() {
+	q.idx--
 }
 
 // TODO: can be useful to implement a Front method, a Back Method and a Prev

@@ -64,3 +64,28 @@ func TestPositionToFront(t *testing.T) {
 		t.Error("unexpected message after the fist one")
 	}
 }
+
+func TestPositionToTheBack(t *testing.T) {
+	q := log.NewQueue()
+
+	_, ok := q.Back()
+	if ok != false {
+		t.Error("unable to position at the end of an empty queue")
+	}
+
+	otherMsg := log.Message{Severity: log.Info, Content: "this is another message"}
+	q.Push(otherMsg)
+
+	expLastMsg := log.Message{Severity: log.Test, Content: "this is the last message"}
+	q.Push(expLastMsg)
+
+	msg, _ := q.Back()
+	if !reflect.DeepEqual(expLastMsg, msg) {
+		t.Error("uncorrect positioning to the back")
+	}
+
+	msg, _ = q.Prev()
+	if !reflect.DeepEqual(otherMsg, msg) {
+		t.Error("unexpected message before the last one")
+	}
+}
