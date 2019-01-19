@@ -27,15 +27,17 @@ func (e *exp) T() *testing.T {
 	return e.t
 }
 
-func (e *exp) logAndFail() bool {
-
+func (e *exp) logAndFail() {
 	e.failF()
-	return false
 }
 
-func (e *exp) ToBeTrue() bool {
+// TODO: can be useful to return the exp type to invoke other methods
+// on it, like a chain
+
+// The ToBeTrue method match the true value of the sample
+func (e *exp) ToBeTrue() *exp {
 	if e.s != true {
-		return e.logAndFail()
+		e.logAndFail()
 	}
-	return true
+	return e
 }

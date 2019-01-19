@@ -25,6 +25,7 @@ type Message struct {
 //Queuer interface define the method for adding messages
 type Queuer interface {
 	Push(msg Message)
+	Count() int
 }
 
 // FwIterator is a contract to define capabilities to position at the
