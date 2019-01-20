@@ -1,12 +1,28 @@
 package texp
 
 import (
+	"io"
+	"os"
 	"testing"
+
+	"github.com/gekorob/texp/format"
 )
 
+var (
+	out   io.Writer
+	style format.Styler
+)
+
+// Don't like it very much... prefer to implement a config obj...
+func init() {
+	out = os.Stdout
+	style = format.NewDefaultStyle()
+}
+
 type exp struct {
-	t     *testing.T
-	s     interface{}
+	t *testing.T
+	s interface{}
+
 	failF func()
 }
 
@@ -27,7 +43,10 @@ func (e *exp) T() *testing.T {
 	return e.t
 }
 
-func (e *exp) logAndFail() {
+func (e *exp) log() {
+}
+
+func (e *exp) fail() {
 	e.failF()
 }
 
@@ -37,7 +56,8 @@ func (e *exp) logAndFail() {
 // The ToBeTrue method match the true value of the sample
 func (e *exp) ToBeTrue() *exp {
 	if e.s != true {
-		e.logAndFail()
+		e.log()
+		e.fail()
 	}
 	return e
 }
