@@ -1,23 +1,21 @@
 package texp
 
 import (
-	"io"
-	"os"
 	"testing"
-
-	"github.com/gekorob/texp/format"
 )
 
-var (
-	out   io.Writer
-	style format.Styler
-)
+var conf config
+
+// var (
+// 	out   io.Writer
+// 	style format.Styler
+// )
 
 // Don't like it very much... prefer to implement a config obj...
-func init() {
-	out = os.Stdout
-	style = format.NewDefaultStyle()
-}
+// func init() {
+// 	out = os.Stdout
+// 	style = format.NewDefaultStyle()
+// }
 
 type exp struct {
 	t *testing.T
@@ -25,6 +23,8 @@ type exp struct {
 
 	failF func()
 }
+
+type expBuilder func(interface{}) *exp
 
 // Expect builder returns a function to setup test expectations ala RSpec
 func Expect(t *testing.T) func(interface{}) *exp {

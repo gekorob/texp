@@ -1,3 +1,12 @@
 package texp
 
-// TODO: configuration for Expect ala Cheney (see link in my bookmarks)
+import (
+	"io"
+
+	"github.com/gekorob/texp/format"
+)
+
+type config struct {
+	out   io.Writer
+	style format.Styler
+}
