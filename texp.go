@@ -49,10 +49,22 @@ func (e *exp) T() *testing.T {
 	return e.t
 }
 
+func (e *exp) Out() io.Writer {
+	return e.out
+}
+
+func (e *exp) Style() format.Styler {
+	return e.style
+}
+
 type expBuilder func(interface{}) *exp
 
-func (b expBuilder) DefaultOutput() io.Writer {
+func (b expBuilder) GlobalOutput() io.Writer {
 	return gOut
+}
+
+func (b expBuilder) GlobalStyle() format.Styler {
+	return gStyle
 }
 
 // Expect returns a builder function to setup test expectations ala RSpec
@@ -81,8 +93,8 @@ func OutTo(w io.Writer) func(*exp) {
 	}
 }
 
-// Style sets the styler for the expectation instance.
-func Style(s format.Styler) func(*exp) {
+// WithStyle sets the styler for the expectation instance.
+func WithStyle(s format.Styler) func(*exp) {
 	return func(e *exp) {
 		e.setStyle(s)
 	}
