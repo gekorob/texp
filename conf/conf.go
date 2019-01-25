@@ -7,13 +7,15 @@ import (
 	"github.com/gekorob/texp/format"
 )
 
-type config struct {
+// The Config structure contains the output writer and the style formatter
+type Config struct {
 	out   io.Writer
 	style format.Styler
 }
 
-func NewConfig(options ...func(*config)) *config {
-	c := config{
+// NewConfig creates a config instance with default values
+func NewConfig(options ...func(*Config)) *Config {
+	c := Config{
 		out:   os.Stdout,
 		style: format.NewDefaultStyle(),
 	}
@@ -25,30 +27,40 @@ func NewConfig(options ...func(*config)) *config {
 	return &c
 }
 
-func (c *config) Output() io.Writer {
+// FromConfig method creates a new Config based on the one passed
+// as a parameter
+func FromConfig(c *Config) *Config {
+	return NewConfig(OutputTo(c.Output()), StyleWith(c.Style()))
+}
+
+// Output method retrieves the output writer set in the config object
+func (c *Config) Output() io.Writer {
 	return c.out
 }
 
-func (c *config) Style() format.Styler {
+// Style method gets the style formatter set in the config object
+func (c *Config) Style() format.Styler {
 	return c.style
 }
 
-func (c *config) setOutputTo(w io.Writer) {
+func (c *Config) setOutputTo(w io.Writer) {
 	c.out = w
 }
 
-func OutputTo(w io.Writer) func(*config) {
-	return func(c *config) {
+// OutputTo method allows to set the output writer
+func OutputTo(w io.Writer) func(*Config) {
+	return func(c *Config) {
 		c.setOutputTo(w)
 	}
 }
 
-func (c *config) setStyleWith(s format.Styler) {
+func (c *Config) setStyleWith(s format.Styler) {
 	c.style = s
 }
 
-func StyleWith(s format.Styler) func(*config) {
-	return func(c *config) {
+// StyleWith method is for setting the style format
+func StyleWith(s format.Styler) func(*Config) {
+	return func(c *Config) {
 		c.setStyleWith(s)
 	}
 }

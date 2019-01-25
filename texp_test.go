@@ -1,45 +1,47 @@
 package texp_test
 
 import (
-	"os"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/gekorob/texp"
-	"github.com/gekorob/texp/format"
+	"github.com/gekorob/texp/conf"
 )
 
 func TestExpectCreation(t *testing.T) {
 	expect := texp.Expect(t)
 
 	if expect == nil {
-		t.Error("expectation creation error")
+		t.Fatal("expectation creation error")
 	}
 
 	if expT := expect(nil).T(); t != expT {
 		t.Error("wrong test runner")
 	}
 
-	if !reflect.DeepEqual(expect.GlobalOutput(), os.Stdout) {
-		t.Error("wrong global output")
+	c := conf.NewConfig()
+
+	if !reflect.DeepEqual(texp.GlobalConfig(), c) {
+		t.Error("wrong global config")
 	}
 
-	if !reflect.DeepEqual(expect.GlobalStyle(), format.NewDefaultStyle()) {
-		t.Error("wrong global style")
+	if !reflect.DeepEqual(expect(nil).Config(), texp.GlobalConfig()) {
+		t.Error("wrong expectation instance config")
 	}
 }
 
-// func TestExpectCreationWithOptions(t *testing.T) {
-// 	var b strings.Builder
-// 	mStyle := new(StyleMock)
+func TestExpectCreationWithOptions(t *testing.T) {
+	var b strings.Builder
 
-// 	expect := texp.Expect(t, texp.OutTo(&b), texp.WithStyle(mStyle))
+	expect := texp.Expect(t, conf.OutputTo(&b))
+	c := conf.NewConfig(conf.OutputTo(&b))
 
-// 	if !reflect.DeepEqual(expect(nil).Out(), &b) {
-// 		t.Error("wrong instance output")
-// 	}
+	if !reflect.DeepEqual(expect(nil).Config(), c) {
+		t.Error("wrong instance config")
+	}
 
-// 	if !reflect.DeepEqual(expect(nil).Style(), mStyle) {
-// 		t.Error("wrong instance output")
-// 	}
-// }
+	if reflect.DeepEqual(expect(nil).Config(), texp.GlobalConfig()) {
+		t.Error("error, instance and global config must be different")
+	}
+}

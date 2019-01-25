@@ -39,7 +39,6 @@ func TestConfigCreation(t *testing.T) {
 
 func TestConfigWithOutputOptions(t *testing.T) {
 	var b strings.Builder
-
 	c := conf.NewConfig(conf.OutputTo(&b))
 
 	if !reflect.DeepEqual(c.Output(), &b) {
@@ -53,5 +52,30 @@ func TestConfigWithStyleOption(t *testing.T) {
 
 	if !reflect.DeepEqual(c.Style(), mStyle) {
 		t.Error("error setting style option")
+	}
+}
+
+func TestConfigWithAllOptions(t *testing.T) {
+	var b strings.Builder
+	mStyle := new(StyleMock)
+	c := conf.NewConfig(conf.StyleWith(mStyle), conf.OutputTo(&b))
+
+	if !reflect.DeepEqual(c.Style(), mStyle) {
+		t.Error("error setting style option")
+	}
+
+	if !reflect.DeepEqual(c.Output(), &b) {
+		t.Error("error setting output option")
+	}
+}
+
+func TestConfigFromAnotherConfig(t *testing.T) {
+	var b strings.Builder
+
+	oC := conf.NewConfig(conf.OutputTo(&b))
+	c := conf.FromConfig(oC)
+
+	if !reflect.DeepEqual(c, oC) {
+		t.Error("wrong configuration copy")
 	}
 }

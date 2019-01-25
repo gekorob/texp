@@ -1,41 +1,30 @@
 package texp
 
 import (
-	"io"
-	"os"
 	"testing"
 
-	"github.com/gekorob/texp/format"
+	"github.com/gekorob/texp/conf"
 )
 
 // TODO: refactor to a config structure...
-var (
-	gOut   io.Writer
-	gStyle format.Styler
-)
+var gConfig *conf.Config
 
 // TODO: need to figure out how to set this global values with
 // flags or files
 func init() {
-	gOut = os.Stdout
-	gStyle = format.NewDefaultStyle()
+	gConfig = conf.NewConfig()
+}
+
+// GlobalConfig returns the config object set at package level
+func GlobalConfig() *conf.Config {
+	return gConfig
 }
 
 type exp struct {
 	t      *testing.T
+	config *conf.Config
 	sample interface{}
-	out    io.Writer
-	style  format.Styler
-
-	failF func()
-}
-
-func (e *exp) setOut(w io.Writer) {
-	e.out = w
-}
-
-func (e *exp) setStyle(s format.Styler) {
-	e.style = s
+	failF  func()
 }
 
 func (e *exp) log() {
@@ -49,54 +38,25 @@ func (e *exp) T() *testing.T {
 	return e.t
 }
 
-func (e *exp) Out() io.Writer {
-	return e.out
-}
-
-func (e *exp) Style() format.Styler {
-	return e.style
-}
-
-type expBuilder func(interface{}) *exp
-
-func (b expBuilder) GlobalOutput() io.Writer {
-	return gOut
-}
-
-func (b expBuilder) GlobalStyle() format.Styler {
-	return gStyle
+func (e *exp) Config() *conf.Config {
+	return e.config
 }
 
 // Expect returns a builder function to setup test expectations ala RSpec
-func Expect(t *testing.T, options ...func(*exp)) expBuilder {
+func Expect(t *testing.T, options ...func(*conf.Config)) func(interface{}) *exp {
 	e := exp{
-		t:     t,
-		out:   gOut,
-		style: gStyle,
-		failF: t.Fail,
+		t:      t,
+		config: conf.FromConfig(GlobalConfig()),
+		failF:  t.Fail,
 	}
 
 	for _, option := range options {
-		option(&e)
+		option(e.config)
 	}
 
 	return func(s interface{}) *exp {
 		e.sample = s
 		return &e
-	}
-}
-
-// OutTo configuration function sets the output writer for the expectation instance.
-func OutTo(w io.Writer) func(*exp) {
-	return func(e *exp) {
-		e.setOut(w)
-	}
-}
-
-// WithStyle sets the styler for the expectation instance.
-func WithStyle(s format.Styler) func(*exp) {
-	return func(e *exp) {
-		e.setStyle(s)
 	}
 }
 
