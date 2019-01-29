@@ -1,9 +1,10 @@
 package texp
 
 import (
-	"testing"
+	"fmt"
 
 	"github.com/gekorob/texp/conf"
+	"github.com/gekorob/texp/log"
 )
 
 // TODO: refactor to a config structure...
@@ -20,21 +21,23 @@ func GlobalConfig() *conf.Config {
 	return gConfig
 }
 
+// TestingT is useful to make assertion on the test runner passed as
+// parameter and to mock failure methods for test reasons
+type TestingT interface {
+	Fail()
+	FailNow()
+	Name() string
+}
+
 type exp struct {
-	t      *testing.T
+	t      TestingT
 	config *conf.Config
+	logQ   *log.Queue
 	sample interface{}
 	failF  func()
 }
 
-func (e *exp) log() {
-}
-
-func (e *exp) fail() {
-	e.failF()
-}
-
-func (e *exp) T() *testing.T {
+func (e *exp) T() TestingT {
 	return e.t
 }
 
@@ -42,10 +45,30 @@ func (e *exp) Config() *conf.Config {
 	return e.config
 }
 
+func (e *exp) log(msg string) {
+	e.logQ.Push(log.Message{
+		Severity: log.Test,
+		Content:  e.t.Name(),
+	})
+	e.logQ.Push(log.Message{
+		Severity: log.Error,
+		Content:  msg,
+	})
+
+	for m, ok := e.logQ.Front(); ok; m, ok = e.logQ.Next() {
+		fmt.Fprint(e.config.Output(), m.Content)
+	}
+}
+
+func (e *exp) fail() {
+	e.failF()
+}
+
 // Expect returns a builder function to setup test expectations ala RSpec
-func Expect(t *testing.T, options ...func(*conf.Config)) func(interface{}) *exp {
+func Expect(t TestingT, options ...func(*conf.Config)) func(interface{}) *exp {
 	e := exp{
 		t:      t,
+		logQ:   log.NewQueue(),
 		config: conf.FromConfig(GlobalConfig()),
 		failF:  t.Fail,
 	}
@@ -60,13 +83,10 @@ func Expect(t *testing.T, options ...func(*conf.Config)) func(interface{}) *exp 
 	}
 }
 
-// TODO: can be useful to return the exp type to invoke other methods
-// on it, like a chain
-
 // The ToBeTrue method match the true value of the sample
-func (e *exp) ToBeTrue() *exp {
+func (e *exp) ToBeTrue(msgs ...string) *exp {
 	if e.sample != true {
-		e.log()
+		e.log("")
 		e.fail()
 	}
 	return e
