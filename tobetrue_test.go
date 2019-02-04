@@ -6,13 +6,23 @@ import (
 
 	"github.com/gekorob/texp"
 	"github.com/gekorob/texp/conf"
+	"github.com/gekorob/texp/mock"
 )
 
 func TestSimpleToBeTrue(t *testing.T) {
 	var b strings.Builder
-	expect := texp.Expect(t, conf.OutputTo(&b))
+	tMock := mock.NewTMock()
 
-	// t.Error("error")
-	expect(true).ToBeTrue()
-	// log.Print(b.String())
+	expect := texp.Expect(tMock, conf.OutputTo(&b))
+
+	expect(false).ToBeTrue()
+
+	if c, ok := tMock.CallsTo("Fail"); ok && c != 1 {
+		t.Error("Expecting call to Fail one time")
+	}
+
+	expLog := "Test: Test\nError: \n"
+	if b.String() != expLog {
+		t.Errorf("Expecting %s, got %s", expLog, b.String())
+	}
 }

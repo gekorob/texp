@@ -2,8 +2,10 @@ package texp
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/gekorob/texp/conf"
+	"github.com/gekorob/texp/format"
 	"github.com/gekorob/texp/log"
 )
 
@@ -55,9 +57,7 @@ func (e *exp) log(msg string) {
 		Content:  msg,
 	})
 
-	for m, ok := e.logQ.Front(); ok; m, ok = e.logQ.Next() {
-		fmt.Fprint(e.config.Output(), m.Content)
-	}
+	write(e.config.Output(), e.logQ, e.config.Style())
 }
 
 func (e *exp) fail() {
@@ -90,4 +90,11 @@ func (e *exp) ToBeTrue(msgs ...string) *exp {
 		e.fail()
 	}
 	return e
+}
+
+func write(w io.Writer, logIter log.FwIterator, s format.Styler) {
+	for m, ok := logIter.Front(); ok; m, ok = logIter.Next() {
+		style := s.BySeverity(m.Severity)
+		fmt.Fprint(w, style.SeverityLabel, style.Separator, m.Content, style.Termination)
+	}
 }

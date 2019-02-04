@@ -21,3 +21,22 @@ type Message struct {
 	Severity
 	Content string
 }
+
+//Queuer interface define the method for adding messages
+type Queuer interface {
+	Push(msg Message)
+	Count() int
+}
+
+// FwIterator is a contract to define capabilities to position at the
+// beginning and move forward
+type FwIterator interface {
+	Front() (Message, bool)
+	Next() (Message, bool)
+}
+
+// RevIterator defines methods to position at the end and move backward
+type RevIterator interface {
+	Back() (Message, bool)
+	Prev() (Message, bool)
+}
