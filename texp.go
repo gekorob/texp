@@ -48,14 +48,8 @@ func (e *exp) Config() *conf.Config {
 }
 
 func (e *exp) log(msg string) {
-	e.logQ.Push(log.Message{
-		Severity: log.Test,
-		Content:  e.t.Name(),
-	})
-	e.logQ.Push(log.Message{
-		Severity: log.Error,
-		Content:  msg,
-	})
+	e.logQ.Push(log.Test(e.t.Name()))
+	e.logQ.Push(log.Error(msg))
 
 	write(e.config.Output(), e.logQ, e.config.Style())
 }
@@ -86,8 +80,7 @@ func Expect(t TestingT, options ...func(*conf.Config)) func(interface{}) *exp {
 // The ToBeTrue method match the true value of the sample
 func (e *exp) ToBeTrue(msgs ...interface{}) *exp {
 	if e.sample != true {
-		m := format.ToString(msgs...)
-		e.log(m)
+		e.log(format.ToString(msgs...))
 		e.fail()
 	}
 	return e

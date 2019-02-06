@@ -26,7 +26,7 @@ func TestEmptyLogQueue(t *testing.T) {
 func TestAddMessage(t *testing.T) {
 	q := log.NewQueue()
 
-	expMsg := log.Message{Severity: log.Error, Content: "error message added"}
+	expMsg := log.Message{Severity: log.ERROR, Content: "error message added"}
 	q.Push(expMsg)
 
 	if q.Count() != 1 {
@@ -51,10 +51,10 @@ func TestPositionToFront(t *testing.T) {
 		t.Error("unable to position at the beginning of an empty queue")
 	}
 
-	expFirstMsg := log.Message{Severity: log.Test, Content: "this is the first message"}
+	expFirstMsg := log.Message{Severity: log.TEST, Content: "this is the first message"}
 	q.Push(expFirstMsg)
 
-	otherMsg := log.Message{Severity: log.Info, Content: "this is another message"}
+	otherMsg := log.Message{Severity: log.INFO, Content: "this is another message"}
 	q.Push(otherMsg)
 
 	msg, _ := q.Front()
@@ -76,10 +76,10 @@ func TestPositionToTheBack(t *testing.T) {
 		t.Error("unable to position at the end of an empty queue")
 	}
 
-	otherMsg := log.Message{Severity: log.Info, Content: "this is another message"}
+	otherMsg := log.Message{Severity: log.INFO, Content: "this is another message"}
 	q.Push(otherMsg)
 
-	expLastMsg := log.Message{Severity: log.Test, Content: "this is the last message"}
+	expLastMsg := log.Message{Severity: log.TEST, Content: "this is the last message"}
 	q.Push(expLastMsg)
 
 	msg, _ := q.Back()
@@ -96,7 +96,7 @@ func TestPositionToTheBack(t *testing.T) {
 func TestPrevAndNextWithOneElement(t *testing.T) {
 	q := log.NewQueue()
 
-	q.Push(log.Message{Severity: log.Test, Content: "element"})
+	q.Push(log.Message{Severity: log.TEST, Content: "element"})
 	q.Front()
 
 	if _, ok := q.Prev(); ok != false {
@@ -111,8 +111,8 @@ func TestPrevAndNextWithOneElement(t *testing.T) {
 func TestIterationOnQueue(t *testing.T) {
 	q := log.NewQueue()
 
-	expFirstMsg := log.Message{Severity: log.Test, Content: "this is the first message"}
-	expLastMsg := log.Message{Severity: log.Test, Content: "this is the last message"}
+	expFirstMsg := log.Message{Severity: log.TEST, Content: "this is the first message"}
+	expLastMsg := log.Message{Severity: log.TEST, Content: "this is the last message"}
 
 	q.Push(expFirstMsg)
 	q.Push(expLastMsg)

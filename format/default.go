@@ -21,11 +21,11 @@ func NewDefaultStyle() *DefaultStyle {
 			Termination: "\n",
 		},
 		labelBySeverity: map[log.Severity]string{
-			log.Fatal: "Fatal",
-			log.Error: "Error",
-			log.Trace: "Trace",
-			log.Info:  "Info",
-			log.Test:  "Test",
+			log.FATAL: "Fatal",
+			log.ERROR: "Error",
+			log.TRACE: "Trace",
+			log.INFO:  "Info",
+			log.TEST:  "Test",
 		},
 	}
 }

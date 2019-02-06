@@ -22,11 +22,11 @@ func TestDefaultFormatter(t *testing.T) {
 		severity      log.Severity
 		labelToVerify string
 	}{
-		{"Fatal", log.Fatal, "Fatal"},
-		{"Error", log.Error, "Error"},
-		{"Trace", log.Trace, "Trace"},
-		{"Test", log.Test, "Test"},
-		{"Info", log.Info, "Info"},
+		{"Fatal", log.FATAL, "Fatal"},
+		{"Error", log.ERROR, "Error"},
+		{"Trace", log.TRACE, "Trace"},
+		{"Test", log.TEST, "Test"},
+		{"Info", log.INFO, "Info"},
 	}
 	df := format.NewDefaultStyle()
 

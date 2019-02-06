@@ -4,22 +4,49 @@ package log
 type Severity int
 
 const (
-	// Info is for general purpose messages.
-	Info Severity = iota + 1
-	// Test is for the test name.
-	Test
-	// Trace is used to follow the call stack.
-	Trace
-	// Error represents the error message.
-	Error
-	// Fatal is used for the blocking error message.
-	Fatal
+	// INFO is for general purpose messages.
+	INFO Severity = iota + 1
+	// TEST is for the test name.
+	TEST
+	// TRACE is used to follow the call stack.
+	TRACE
+	// ERROR represents the error message.
+	ERROR
+	// FATAL is used for the blocking error message.
+	FATAL
 )
 
 // The Message is a categorized text content.
 type Message struct {
 	Severity
 	Content string
+}
+
+func Info(content string) Message {
+	return createMessage(INFO, content)
+}
+
+func Test(content string) Message {
+	return createMessage(TEST, content)
+}
+
+func Trace(content string) Message {
+	return createMessage(TRACE, content)
+}
+
+func Error(content string) Message {
+	return createMessage(ERROR, content)
+}
+
+func Fatal(content string) Message {
+	return createMessage(FATAL, content)
+}
+
+func createMessage(sev Severity, cnt string) Message {
+	return Message{
+		Severity: sev,
+		Content:  cnt,
+	}
 }
 
 //Queuer interface define the method for adding messages
