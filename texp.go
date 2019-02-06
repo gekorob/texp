@@ -84,9 +84,10 @@ func Expect(t TestingT, options ...func(*conf.Config)) func(interface{}) *exp {
 }
 
 // The ToBeTrue method match the true value of the sample
-func (e *exp) ToBeTrue(msgs ...string) *exp {
+func (e *exp) ToBeTrue(msgs ...interface{}) *exp {
 	if e.sample != true {
-		e.log("")
+		m := format.ToString(msgs...)
+		e.log(m)
 		e.fail()
 	}
 	return e
