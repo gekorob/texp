@@ -4,16 +4,16 @@ package log
 type Severity int
 
 const (
-	// INFO is for general purpose messages.
-	INFO Severity = iota + 1
-	// TEST is for the test name.
-	TEST
 	// TRACE is used to follow the call stack.
-	TRACE
+	TRACE Severity = iota
+	// INFO is for general purpose messages.
+	INFO
 	// ERROR represents the error message.
 	ERROR
 	// FATAL is used for the blocking error message.
 	FATAL
+	// TEST is for the test name.
+	TEST
 )
 
 // The Message is a categorized text content.
