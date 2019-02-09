@@ -5,9 +5,6 @@ import (
 	"io"
 	"path"
 	"runtime"
-	"strings"
-	"unicode"
-	"unicode/utf8"
 
 	"github.com/gekorob/texp/conf"
 	"github.com/gekorob/texp/format"
@@ -119,17 +116,6 @@ func traceCalls(q log.Queuer) {
 		c.linenum = line
 	}
 	q.Push(log.Trace(fmt.Sprintf("%s:%d", path.Base(c.file), c.linenum)))
-}
-
-func isTest(name, prefix string) bool {
-	if !strings.HasPrefix(name, prefix) {
-		return false
-	}
-	if len(name) == len(prefix) { // "Test" is ok
-		return true
-	}
-	rune, _ := utf8.DecodeRuneInString(name[len(prefix):])
-	return !unicode.IsLower(rune)
 }
 
 func write(w io.Writer, logIter log.FwIterator, s format.Styler) {

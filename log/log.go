@@ -22,22 +22,27 @@ type Message struct {
 	Content string
 }
 
+// Info method creates a new Message with the Info severity
 func Info(content string) Message {
 	return createMessage(INFO, content)
 }
 
+// Test method creates a Message with the severity set to Test
 func Test(content string) Message {
 	return createMessage(TEST, content)
 }
 
+// Trace method creates a new Message with Trace severity
 func Trace(content string) Message {
 	return createMessage(TRACE, content)
 }
 
+// Error method creates a new Message with severity set to Error
 func Error(content string) Message {
 	return createMessage(ERROR, content)
 }
 
+// Fatal creates a Message with Fatal severity
 func Fatal(content string) Message {
 	return createMessage(FATAL, content)
 }

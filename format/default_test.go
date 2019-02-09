@@ -46,3 +46,13 @@ func TestDefaultFormatter(t *testing.T) {
 		})
 	}
 }
+
+func TestDefaultStyleWithoutTrace(t *testing.T) {
+	s := format.NewDefaultStyle(format.WithNoTrace())
+
+	m := s.BySeverity(log.TRACE)
+
+	if m != nil {
+		t.Errorf("expecting nil, got %v", m)
+	}
+}

@@ -51,6 +51,8 @@ func (d *DefaultStyle) disableTrace() {
 	d.trace = false
 }
 
+//WithNoTrace method, disable call stack tracing. Especially useful while developing and
+// testing the assertions
 func WithNoTrace() func(*DefaultStyle) {
 	return func(d *DefaultStyle) {
 		d.disableTrace()
