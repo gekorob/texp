@@ -79,15 +79,6 @@ func Expect(t TestingT, options ...func(*conf.Config)) func(interface{}) *exp {
 	}
 }
 
-// The ToBeTrue method match the true value of the sample
-func (e *exp) ToBeTrue(msgs ...interface{}) *exp {
-	if e.sample != true {
-		e.log(format.ToString(msgs...))
-		e.fail()
-	}
-	return e
-}
-
 func traceCalls(q log.Queuer) {
 	type call struct {
 		file    string
