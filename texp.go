@@ -60,8 +60,10 @@ func (e *exp) fail() {
 	e.failF()
 }
 
+type ExpBuilder func(interface{}) *exp
+
 // Expect returns a builder function to setup test expectations ala RSpec
-func Expect(t TestingT, options ...func(*conf.Config)) func(interface{}) *exp {
+func Expect(t TestingT, options ...func(*conf.Config)) ExpBuilder {
 	e := exp{
 		t:      t,
 		logQ:   log.NewQueue(),

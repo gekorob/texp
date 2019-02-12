@@ -10,3 +10,11 @@ func (e *exp) ToBeTrue(msgs ...interface{}) *exp {
 	}
 	return e
 }
+
+func (e *exp) ToBeNil(msgs ...interface{}) *exp {
+	if e.sample != nil {
+		e.log(format.ToString(msgs...))
+		e.fail()
+	}
+	return e
+}
