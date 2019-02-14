@@ -22,6 +22,18 @@ var niltests = []struct {
 			return nF == 0
 		},
 	},
+	{
+		N: "NewObjNotNil",
+		T: func(expect texp.ExpBuilder) {
+			type FakeObj struct {
+			}
+			expect(5).ToBeNil()
+		},
+		A: func(tM *mock.TMock) bool {
+			nF, _ := tM.CallsTo("Fail")
+			return nF == 1
+		},
+	},
 }
 
 func TestIsNil(t *testing.T) {
@@ -31,7 +43,7 @@ func TestIsNil(t *testing.T) {
 			expect := texp.Expect(tMock)
 			tt.T(expect)
 			if !tt.A(tMock) {
-				t.Error("expect no call to Fail")
+				t.Error("Wrong calls to Fail")
 			}
 		})
 	}

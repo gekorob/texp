@@ -39,12 +39,13 @@ func NewDefaultStyle(options ...func(*DefaultStyle)) *DefaultStyle {
 }
 
 // BySeverity method returns the correct style for the selected Severity
-func (d *DefaultStyle) BySeverity(s log.Severity) *Style {
-	if s == log.TRACE && !d.trace {
+func (d *DefaultStyle) BySeverity(sev log.Severity) *Style {
+	if sev == log.TRACE && !d.trace {
 		return nil
 	}
-	d.baseStyle.SeverityLabel = d.labelBySeverity[s]
-	return &d.baseStyle
+	s := d.baseStyle
+	s.SeverityLabel = d.labelBySeverity[sev]
+	return &s
 }
 
 func (d *DefaultStyle) disableTrace() {
