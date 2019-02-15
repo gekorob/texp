@@ -18,8 +18,18 @@ var niltests = []struct {
 			expect(nil).ToBeNil()
 		},
 		A: func(tM *mock.TMock) bool {
-			nF, _ := tM.CallsTo("Fail")
-			return nF == 0
+			return !testFailInvoked(tM)
+		},
+	},
+	{
+		N: "EmptyStructPointerNil",
+		T: func(expect texp.ExpBuilder) {
+			type FakeObj struct {
+			}
+			expect((*struct{})(nil)).ToBeNil()
+		},
+		A: func(tM *mock.TMock) bool {
+			return !testFailInvoked(tM)
 		},
 	},
 	{
@@ -27,11 +37,10 @@ var niltests = []struct {
 		T: func(expect texp.ExpBuilder) {
 			type FakeObj struct {
 			}
-			expect(5).ToBeNil()
+			expect(new(FakeObj)).ToBeNil()
 		},
 		A: func(tM *mock.TMock) bool {
-			nF, _ := tM.CallsTo("Fail")
-			return nF == 1
+			return testFailInvoked(tM)
 		},
 	},
 }

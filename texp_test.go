@@ -7,6 +7,7 @@ import (
 
 	"github.com/gekorob/texp"
 	"github.com/gekorob/texp/conf"
+	"github.com/gekorob/texp/mock"
 )
 
 func TestExpectCreation(t *testing.T) {
@@ -44,4 +45,11 @@ func TestExpectCreationWithOptions(t *testing.T) {
 	if reflect.DeepEqual(expect(nil).Config(), texp.GlobalConfig()) {
 		t.Error("error, instance and global config must be different")
 	}
+}
+
+func testFailInvoked(tM *mock.TMock) bool {
+	if nC, ok := tM.CallsTo("Fail"); ok && nC != 0 {
+		return true
+	}
+	return false
 }

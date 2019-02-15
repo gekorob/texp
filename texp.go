@@ -60,6 +60,8 @@ func (e *exp) fail() {
 	e.failF()
 }
 
+// ExpBuilder is the function that returns the expectation
+// object to call assertions
 type ExpBuilder func(interface{}) *exp
 
 // Expect returns a builder function to setup test expectations ala RSpec
