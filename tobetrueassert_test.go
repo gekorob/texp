@@ -89,7 +89,7 @@ func TestToBeTrueCases(t *testing.T) {
 	for _, tt := range trueTests {
 		t.Run(tt.N, func(t *testing.T) {
 			tMock := mock.NewTMock()
-			expect := texp.Expect(tMock)
+			expect := texp.Expect(tMock, conf.OutputTo(new(strings.Builder)))
 			tt.T(expect)
 			if !tt.A(tMock) {
 				t.Error("Wrong calls to Fail")

@@ -15,6 +15,16 @@ func (e *exp) ToBeTrue(msgs ...interface{}) *exp {
 	return e
 }
 
+func (e *exp) ToEqual(expValue interface{}, msgs ...interface{}) *exp {
+	// if !reflect.DeepEqual(e.sample, expValue) {
+	eq := reflect.DeepEqual(e.sample, expValue)
+	if !eq {
+		e.log(format.ToString(msgs...))
+		e.fail()
+	}
+	return e
+}
+
 // ToBeNil method returns true if the sample can be
 // considered Nil
 func (e *exp) ToBeNil(msgs ...interface{}) *exp {

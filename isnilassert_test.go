@@ -1,13 +1,15 @@
 package texp_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/gekorob/texp"
+	"github.com/gekorob/texp/conf"
 	"github.com/gekorob/texp/mock"
 )
 
-var niltests = []struct {
+var nilTests = []struct {
 	N string
 	T func(texp.ExpBuilder)
 	A func(*mock.TMock) bool
@@ -46,13 +48,13 @@ var niltests = []struct {
 }
 
 func TestIsNil(t *testing.T) {
-	for _, tt := range niltests {
+	for _, tt := range nilTests {
 		t.Run(tt.N, func(t *testing.T) {
 			tMock := mock.NewTMock()
-			expect := texp.Expect(tMock)
+			expect := texp.Expect(tMock, conf.OutputTo(new(strings.Builder)))
 			tt.T(expect)
 			if !tt.A(tMock) {
-				t.Error("Wrong calls to Fail")
+				t.Errorf("Wrong calls to Fail")
 			}
 		})
 	}
