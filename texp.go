@@ -6,6 +6,7 @@ import (
 	"path"
 	"runtime"
 
+	"github.com/gekorob/simplist"
 	"github.com/gekorob/texp/conf"
 	"github.com/gekorob/texp/format"
 	"github.com/gekorob/texp/log"
@@ -36,7 +37,7 @@ type TestingT interface {
 type exp struct {
 	t      TestingT
 	config *conf.Config
-	logQ   *log.Queue
+	logQ   *simplist.List
 	sample interface{}
 	failF  func()
 }
@@ -50,7 +51,7 @@ func (e *exp) Config() *conf.Config {
 }
 
 func (e *exp) log(msg string) {
-	e.logQ = log.NewQueue()
+	e.logQ = simplist.NewList()
 	e.logQ.Push(log.Test(e.t.Name()))
 	traceCalls(e.logQ)
 	e.logQ.Push(log.Error(msg))
@@ -115,9 +116,11 @@ func traceCalls(q log.Queuer) {
 
 func write(w io.Writer, logIter log.FwIterator, s format.Styler) {
 	for m, ok := logIter.Front(); ok; m, ok = logIter.Next() {
-		style := s.BySeverity(m.Severity)
-		if style != nil {
-			fmt.Fprint(w, style.SeverityLabel, style.Separator, m.Content, style.Termination)
+		if n, ok := m.(log.Message); ok {
+			style := s.BySeverity(n.Severity)
+			if style != nil {
+				fmt.Fprint(w, style.SeverityLabel, style.Separator, n.Content, style.Termination)
+			}
 		}
 	}
 }

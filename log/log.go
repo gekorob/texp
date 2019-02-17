@@ -56,19 +56,19 @@ func createMessage(sev Severity, cnt string) Message {
 
 //Queuer interface define the method for adding messages
 type Queuer interface {
-	Push(msg Message)
+	Push(interface{})
 	Count() int
 }
 
 // FwIterator is a contract to define capabilities to position at the
 // beginning and move forward
 type FwIterator interface {
-	Front() (Message, bool)
-	Next() (Message, bool)
+	Front() (interface{}, bool)
+	Next() (interface{}, bool)
 }
 
 // RevIterator defines methods to position at the end and move backward
 type RevIterator interface {
-	Back() (Message, bool)
-	Prev() (Message, bool)
+	Back() (interface{}, bool)
+	Prev() (interface{}, bool)
 }
