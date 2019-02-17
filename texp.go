@@ -50,6 +50,7 @@ func (e *exp) Config() *conf.Config {
 }
 
 func (e *exp) log(msg string) {
+	e.logQ = log.NewQueue()
 	e.logQ.Push(log.Test(e.t.Name()))
 	traceCalls(e.logQ)
 	e.logQ.Push(log.Error(msg))
@@ -68,7 +69,6 @@ type ExpBuilder func(interface{}) *exp
 func Expect(t TestingT, options ...func(*conf.Config)) ExpBuilder {
 	e := exp{
 		t:      t,
-		logQ:   log.NewQueue(),
 		config: conf.FromConfig(GlobalConfig()),
 		failF:  t.Fail,
 	}

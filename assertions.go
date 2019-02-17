@@ -16,9 +16,7 @@ func (e *exp) ToBeTrue(msgs ...interface{}) *exp {
 }
 
 func (e *exp) ToEqual(expValue interface{}, msgs ...interface{}) *exp {
-	// if !reflect.DeepEqual(e.sample, expValue) {
-	eq := reflect.DeepEqual(e.sample, expValue)
-	if !eq {
+	if !reflect.DeepEqual(e.sample, expValue) {
 		e.log(format.ToString(msgs...))
 		e.fail()
 	}
