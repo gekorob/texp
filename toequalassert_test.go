@@ -66,6 +66,66 @@ var eqTests = []struct {
 			return testFailInvoked(tM)
 		},
 	},
+	{
+		N: "Equal to nil",
+		T: func(expect texp.ExpBuilder) {
+			expect("first").ToEqual(nil)
+		},
+		A: func(tM *mock.TMock) bool {
+			return testFailInvoked(tM)
+		},
+	},
+	{
+		N: "Not Equal uint32 and uint64",
+		T: func(expect texp.ExpBuilder) {
+			expect(uint32(3)).ToEqual(uint64(3))
+		},
+		A: func(tM *mock.TMock) bool {
+			return testFailInvoked(tM)
+		},
+	},
+	{
+		N: "Equal uint",
+		T: func(expect texp.ExpBuilder) {
+			expect(uint(3)).ToEqual(uint(3))
+		},
+		A: func(tM *mock.TMock) bool {
+			return !testFailInvoked(tM)
+		},
+	},
+	{
+		N: "Equal slicesi, same order",
+		T: func(expect texp.ExpBuilder) {
+			s1 := []string{"first", "second", "third"}
+			s2 := []string{"first", "second", "third"}
+			expect(s1).ToEqual(s2)
+		},
+		A: func(tM *mock.TMock) bool {
+			return !testFailInvoked(tM)
+		},
+	},
+	{
+		N: "Not Equal slices, same elements different order",
+		T: func(expect texp.ExpBuilder) {
+			s1 := []string{"first", "second", "third"}
+			s2 := []string{"second", "first", "third"}
+			expect(s1).ToEqual(s2)
+		},
+		A: func(tM *mock.TMock) bool {
+			return testFailInvoked(tM)
+		},
+	},
+	{
+		N: "Not Equal maps",
+		T: func(expect texp.ExpBuilder) {
+			m1 := map[string]interface{}{"element": 5}
+			m2 := map[string]interface{}{"element": 20}
+			expect(m1).ToEqual(m2)
+		},
+		A: func(tM *mock.TMock) bool {
+			return testFailInvoked(tM)
+		},
+	},
 	// {
 	// 	N: "NewObjNotNil",
 	// 	T: func(expect texp.ExpBuilder) {
