@@ -9,16 +9,15 @@ import (
 // ToBeTrue method match the true value of the sample
 func (e *exp) ToBeTrue(msgs ...interface{}) *exp {
 	if e.sample != true {
-		e.log(format.ToString(msgs...))
-		e.fail()
+		e.logAndFail(msgs...)
 	}
 	return e
 }
 
+// ToEqual method test the equality between sample and expectedValue
 func (e *exp) ToEqual(expValue interface{}, msgs ...interface{}) *exp {
 	if !reflect.DeepEqual(e.sample, expValue) {
-		e.log(format.ToString(msgs...))
-		e.fail()
+		e.logAndFail(msgs...)
 	}
 	return e
 }

@@ -126,17 +126,48 @@ var eqTests = []struct {
 			return testFailInvoked(tM)
 		},
 	},
-	// {
-	// 	N: "NewObjNotNil",
-	// 	T: func(expect texp.ExpBuilder) {
-	// 		type FakeObj struct {
-	// 		}
-	// 		expect(new(FakeObj)).ToBeNil()
-	// 	},
-	// 	A: func(tM *mock.TMock) bool {
-	// 		return testFailInvoked(tM)
-	// 	},
-	// },
+	{
+		N: "Equal nil and nil",
+		T: func(expect texp.ExpBuilder) {
+			expect(nil).ToEqual(nil)
+		},
+		A: func(tM *mock.TMock) bool {
+			return !testFailInvoked(tM)
+		},
+	},
+	{
+		N: "Not Equal nil map",
+		T: func(expect texp.ExpBuilder) {
+			var m1 map[string]int
+			m2 := map[string]int{}
+			expect(m1).ToEqual(m2)
+		},
+		A: func(tM *mock.TMock) bool {
+			return testFailInvoked(tM)
+		},
+	},
+	{
+		N: "Equal nil slice",
+		T: func(expect texp.ExpBuilder) {
+			var s1 []string
+			var s2 []string
+			expect(s1).ToEqual(s2)
+		},
+		A: func(tM *mock.TMock) bool {
+			return !testFailInvoked(tM)
+		},
+	},
+	{
+		N: "Not Equal chan",
+		T: func(expect texp.ExpBuilder) {
+			var c1 chan string
+			c2 := make(chan string)
+			expect(c1).ToEqual(c2)
+		},
+		A: func(tM *mock.TMock) bool {
+			return testFailInvoked(tM)
+		},
+	},
 }
 
 func TestEqual(t *testing.T) {

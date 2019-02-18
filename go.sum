@@ -4,3 +4,5 @@ github.com/gekorob/simplist v0.1.0 h1:CZDoLG8/JYL5CEgtheg+bryvm8VWP4yyF3vq41oJD2
 github.com/gekorob/simplist v0.1.0/go.mod h1:J8x8H0dhLrlzzw3P5nQ5+vwPJBx5/jc0ytiqjEfSEjY=
 github.com/gekorob/simplist v0.2.0 h1:hd4As+Uu36SpM0QVpRlz4sPqRszvK+FxpdLm5EKgaLw=
 github.com/gekorob/simplist v0.2.0/go.mod h1:J8x8H0dhLrlzzw3P5nQ5+vwPJBx5/jc0ytiqjEfSEjY=
+github.com/matryer/is v1.2.0 h1:92UTHpy8CDwaJ08GqLDzhhuixiBUUD1p3AU6PHddz4A=
+github.com/matryer/is v1.2.0/go.mod h1:2fLPjFQM9rhQ15aVEtbuwhJinnOqrmgXPNdZsdwlWXA=

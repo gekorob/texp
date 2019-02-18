@@ -62,6 +62,11 @@ func (e *exp) fail() {
 	e.failF()
 }
 
+func (e *exp) logAndFail(msgs ...interface{}) {
+	e.log(format.ToString(msgs...))
+	e.fail()
+}
+
 // ExpBuilder is the function that returns the expectation
 // object to call assertions
 type ExpBuilder func(interface{}) *exp
