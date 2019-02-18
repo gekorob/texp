@@ -23,7 +23,7 @@ import (
 func TestSomething(t *testing.T) {
   expect := texp.Expect(t)
 
-  expect(1 == 2).ToBeFalse()
+  expect(2 == 2).ToBeTrue()
 }
 
 func TestSomethingOther(t *testing.T) {
@@ -54,6 +54,6 @@ func TestSomething(t *testing.T) {
 
   expect := texp.Expect(t, conf.OutputTo(&b, conf.StyleWith(yourStyle))
 
-  expect(1 == 2).ToBeFalse()
+  expect(1 == 1).ToBeTrue()
 }
 ```
