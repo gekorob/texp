@@ -51,7 +51,7 @@ func (e *exp) Config() *conf.Config {
 }
 
 func (e *exp) log(msg string) {
-	e.logQ = simplist.NewList()
+	e.logQ = simplist.New()
 	e.logQ.Push(log.Test(e.t.Name()))
 	traceCalls(e.logQ)
 	e.logQ.Push(log.Error(msg))
