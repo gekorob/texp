@@ -43,6 +43,12 @@ func neutralModifierFunc(a assertFunc) assertFunc {
 	}
 }
 
+func negationModifierFunc(a assertFunc) assertFunc {
+	return func(s interface{}) bool {
+		return !a(s)
+	}
+}
+
 type exp struct {
 	t      TestingT
 	config *conf.Config

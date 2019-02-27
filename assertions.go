@@ -2,15 +2,20 @@ package texp
 
 import (
 	"reflect"
-
-	"github.com/gekorob/texp/format"
 )
+
+// Not method is useful to express negative assertions
+func (e *exp) Not() *exp {
+	e.modF = negationModifierFunc
+	return e
+}
 
 // ToBeTrue method match the true value of the sample
 func (e *exp) ToBeTrue(msgs ...interface{}) *exp {
-	if e.sample != true {
+	if !e.modF(isTrue)(e.sample) {
 		e.logAndFail(msgs...)
 	}
+	e.modF = neutralModifierFunc
 	return e
 }
 
@@ -26,8 +31,7 @@ func (e *exp) ToEqual(expValue interface{}, msgs ...interface{}) *exp {
 // considered Nil
 func (e *exp) ToBeNil(msgs ...interface{}) *exp {
 	if !e.modF(isNil)(e.sample) {
-		e.log(format.ToString(msgs...))
-		e.fail()
+		e.logAndFail(msgs...)
 	}
 	e.modF = neutralModifierFunc
 	return e
@@ -44,6 +48,10 @@ func isNil(o interface{}) bool {
 	}
 
 	return false
+}
+
+func isTrue(o interface{}) bool {
+	return o == true
 }
 
 func canUseIsNilByKind(k reflect.Kind) bool {
