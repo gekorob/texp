@@ -147,6 +147,17 @@ var eqTests = []struct {
 		},
 	},
 	{
+		N: "Equal nil map",
+		T: func(expect texp.ExpBuilder) {
+			var m1 map[string]int
+			var m2 map[string]int
+			expect(m1).ToEqual(m2)
+		},
+		A: func(tM *mock.TMock) bool {
+			return !testFailInvoked(tM)
+		},
+	},
+	{
 		N: "Equal nil slice",
 		T: func(expect texp.ExpBuilder) {
 			var s1 []string

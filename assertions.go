@@ -25,10 +25,11 @@ func (e *exp) ToEqual(expValue interface{}, msgs ...interface{}) *exp {
 // ToBeNil method returns true if the sample can be
 // considered Nil
 func (e *exp) ToBeNil(msgs ...interface{}) *exp {
-	if !isNil(e.sample) {
+	if !e.modF(isNil)(e.sample) {
 		e.log(format.ToString(msgs...))
 		e.fail()
 	}
+	e.modF = neutralModifierFunc
 	return e
 }
 

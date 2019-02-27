@@ -34,12 +34,41 @@ type TestingT interface {
 	Name() string
 }
 
+type assertFunc func(interface{}) bool
+type modifierFunc func(assertFunc) assertFunc
+
+func neutralModifierFunc(a assertFunc) assertFunc {
+	return func(s interface{}) bool {
+		return a(s)
+	}
+}
+
 type exp struct {
 	t      TestingT
 	config *conf.Config
 	logQ   *simplist.List
 	sample interface{}
 	failF  func()
+	modF   modifierFunc
+}
+
+// Expect returns a builder function to setup test expectations ala RSpec
+func Expect(t TestingT, options ...func(*conf.Config)) ExpBuilder {
+	e := exp{
+		t:      t,
+		config: conf.FromConfig(GlobalConfig()),
+		failF:  t.Fail,
+		modF:   neutralModifierFunc,
+	}
+
+	for _, option := range options {
+		option(e.config)
+	}
+
+	return func(s interface{}) *exp {
+		e.sample = s
+		return &e
+	}
 }
 
 func (e *exp) T() TestingT {
@@ -70,24 +99,6 @@ func (e *exp) logAndFail(msgs ...interface{}) {
 // ExpBuilder is the function that returns the expectation
 // object to call assertions
 type ExpBuilder func(interface{}) *exp
-
-// Expect returns a builder function to setup test expectations ala RSpec
-func Expect(t TestingT, options ...func(*conf.Config)) ExpBuilder {
-	e := exp{
-		t:      t,
-		config: conf.FromConfig(GlobalConfig()),
-		failF:  t.Fail,
-	}
-
-	for _, option := range options {
-		option(e.config)
-	}
-
-	return func(s interface{}) *exp {
-		e.sample = s
-		return &e
-	}
-}
 
 func traceCalls(q log.Queuer) {
 	type call struct {
